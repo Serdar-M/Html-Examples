@@ -1,0 +1,653 @@
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>MP3 Player</title>
+  <meta name="google" content="notranslate"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css'>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css'>
+  <style>
+    *{
+      background-color: #0d0d0d;
+    }
+:root {
+  --primary-bg: #0d0d0d;
+  --primary-text: #aebcb9;
+}
+
+*, .label {
+  color: var(--primary-text);
+}
+
+p {
+  margin-bottom: 1em;
+}
+
+.section {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.columns {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+.columns .column {
+  padding: 20px;
+}
+
+.is-hidden {
+  display: none;
+}
+
+.button {
+  transition: background 0.2s cubic-bezier(0, 0, 0.2, 1);
+}
+.button.is-trans {
+  border-color: transparent;
+  background: transparent;
+}
+.button.is-trans, .button.is-trans:active, .button.is-trans:focus {
+  box-shadow: none;
+}
+.button.is-trans:hover:not(.is-nohover), .button.is-trans.is-active {
+  background: #0d0d0d;
+}
+
+input[type=range] {
+  display: block;
+  height: 19px;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+  background: #0d0d0d;
+  -webkit-appearance: none;
+}
+input[type=range]:after {
+  display: block;
+  content: "";
+  position: absolute;
+  height: 6px;
+  width: 100%;
+  top: 6px;
+  left: 0;
+  background: rgba(158, 158, 158, 0.3);
+}
+input[type=range], input[type=range]:active, input[type=range]:focus {
+  box-shadow: none;
+  border: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 19px;
+  height: 19px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0.5px 0.5px 3px #0d0d0d;
+  position: relative;
+  display: block;
+  z-index: 9;
+}
+
+.range-input {
+  position: relative;
+}
+.range-input .bar {
+  border-radius: 4px;
+  background: #0d0d0d;
+  position: absolute;
+  top: 6px;
+  height: 6px;
+  left: 0;
+}
+
+.audio-volume {
+  width: 200px;
+  margin: auto;
+}
+.audio-volume input {
+  width: 100%;
+}
+
+.time__timeline {
+  margin-bottom: 5px;
+}
+.time__indicator {
+  font-size: 0.85em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.music-player .top-area {
+  position: relative;
+  overflow: hidden;
+  margin-top: -30px;
+  padding-top: 30px;
+}
+.music-player .top-area .lyrics {
+  display: none;
+}
+.music-player .top-area .cover {
+  margin: 0 auto 1em;
+  background-color: #0d0d0d;
+  background-size: cover;
+  background-position: center;
+  transition: filter 0.5s ease-out;
+  max-width: 500px;
+}
+
+.music-player .top-area.has-lyrics {
+  cursor: pointer;
+}
+.music-player .top-area.has-lyrics .lyrics {
+  display: block;
+  position: absolute;
+  z-index: 3;
+  background: #0d0d0d;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding: 1em 30px;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  text-align: center;
+  opacity: 0;
+  cursor: pointer;
+}
+.music-player .top-area.has-lyrics.show-lyrics:after {
+  display: block;
+  content: "";
+  position: absolute;
+  box-shadow: 0 -15px 15px 0 inset #0d0d0d;
+  height: 30px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}
+.music-player .top-area.has-lyrics.show-lyrics .lyrics {
+  opacity: 1;
+}
+.music-player .top-area.has-lyrics.show-lyrics .cover {
+  filter: blur(20px);
+  overflow: hidden;
+}
+@media screen and (max-width: 500px) {
+  .music-player .buttons.is-centered:not(.has-addons) {
+    justify-content: space-around;
+  }
+  .music-player .buttons.is-centered:not(.has-addons) .button {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+.music-player .buttons.is-centered:not(.has-addons) .button .fa-play {
+  margin-left: 4px;
+}
+.music-player .buttons.is-centered:not(.has-addons) .button .fa-forward {
+  margin-left: 2px;
+}
+.music-player .buttons.is-centered:not(.has-addons) .button .fa-backward {
+  margin-left: -4px;
+}
+.music-player .buttons.is-centered:not(.has-addons) .button:first-child {
+  margin-right: 1em;
+}
+.music-player .buttons.is-centered:not(.has-addons) .button:last-child {
+  margin-left: 1em;
+}
+.music-player .buttons.is-centered:not(.has-addons) .button.is-rounded {
+  padding: 0;
+  width: 2.25em;
+  height: 2.25em;
+}
+@media screen and (max-width: 500px) {
+  .music-player .buttons.is-centered:not(.has-addons) .button.is-rounded {
+    width: 2em;
+    height: 2em;
+  }
+}
+.music-player .buttons.is-centered:not(.has-addons) .button.repeat-1:after {
+  display: block;
+  position: absolute;
+  content: "1";
+  font-size: 12px;
+  right: 2px;
+  top: 0px;
+}
+.music-list {
+  background: #0d0d0d;
+}
+.music-list nav {
+  align-items: center;
+  margin-right: -0.75em;
+}
+.music-list nav .title {
+  flex-grow: 1;
+}
+.music-list ol {
+  margin-left: -0.75em;
+  margin-right: -0.75em;
+}
+.music-list .music-list__item {
+  display: flex;
+  justify-content: flex-start;
+  text-align: left;
+  top: -1px;
+}
+.music-list .music-list__item .num {
+  font-size: 0.75em;
+  flex: none;
+  width: 1em;
+  vertical-align: bottom;
+}
+.music-list .music-list__item .icon {
+  opacity: 0;
+}
+.music-list .music-list__item.is-active .icon, .music-list .music-list__item:hover .icon {
+  opacity: 1;
+}
+.music-list__title {
+  vertical-align: bottom;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  position: relative;
+  flex-grow: 1;
+}
+.music-list__artist {
+  display: none;
+}
+
+.music-list__time {
+  width: 3.5em;
+  flex: none;
+  text-align: right;
+}
+  </style>
+</head>
+<body>
+
+<section id="app"> 
+  <div class="container-fluid">
+    <div class="columns">
+      <div class="column is-6 music-list">
+        <nav class="field is-grouped">
+          <div class="control title is-normal has-text-left">
+            <label class="label">Music List</label>
+          </div>
+          <div class="control">
+            <div class="field has-addons">
+              <div class="control">
+                <div class="select is-small" @change="sortBy($event)">
+                  <select v-model="sortby">
+                    <option value="none" disabled="disabled" selected="selected">Sort</option>
+                    <option value="title">Title</option>
+                    <option value="year">Year</option>
+                    <option value="track">Track</option>
+                  </select>
+                </div>
+              </div>
+              <div class="control">
+                <div class="button is-small" @click="sortAsc=!sortAsc;sortBy()">
+                  <div class="icon"><i class="fa" :class="{&quot;fa-sort-amount-down&quot;: !sortAsc, &quot;fa-sort-amount-down-alt&quot;: sortAsc}"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="control">
+            <label class="button is-trans has-text-danger" for="addAudio">Add</label>
+            <input class="is-hidden" id="addAudio" type="file" accept="audio/*|video/m4a" multiple="true" @change="uploadedFiles"/>
+          </div>
+          <div class="control">
+            <button class="button is-trans has-text-danger" @click="clearList">Clear</button>
+          </div>
+        </nav>
+        <ol>
+          <li class="music-list__item button is-trans is-fullwidth" v-for="(music, id) in playList" @click="resetHist(true);picked(id, true)" :class="{&quot;is-active&quot;:music.src==audio.meta.src}"><span class="num" v-text="id+1"></span><span class="icon is-small"><i class="fa fa-play fa-xs"></i></span><span class="music-list__title" v-text="music.title">Take Me to the Depths</span><span class="music-list__artist" v-text="music.artist">Take Me to the Depths</span><span class="music-list__time" v-text="formatTime(music.duration)">2:27</span></li>
+        </ol>
+                <div class="time">
+          <div class="time__timeline range-input">
+
+            <input class="input" type="range" step="0.1" min="0" :max="audio.meta.duration" v-model="audio.currTime" @mousedown="seekingStart" @change="seekingEnd"/>
+          </div>
+          <div class="time__indicator"><span v-text="time.ellapsed">0</span><span v-text="time.remained">123</span></div>
+        </div>
+        <div class="buttons is-centered">
+          <div class="button is-trans is-nohover" :class="{&quot;is-active&quot;:status.shuffle}" @click="(!status.shuffle)&amp;&amp;resetHist(true);status.shuffle=!status.shuffle"><span class="icon"><i class="fas fa-random"></i></span></div>
+          <div class="button is-large is-trans is-rounded btn-backward"><span class="icon"><i class="fas fa-backward" @click="backward"></i></span></div>
+          <div class="button play is-large is-trans is-rounded btn-play" @click="playPause"><span class="icon"><i class="fas" :class="{&quot;fa-play&quot;: audio.paused,&quot;fa-pause&quot;: !audio.paused}"></i></span></div>
+          <div class="button is-large is-trans is-rounded btn-forward" @click="forward"><span class="icon"><i class="fas fa-forward"></i></span></div>
+          <div class="button is-trans is-nohover" :class="{&quot;is-active&quot;:status.repeat&gt;0, &quot;repeat-1&quot;:status.repeat==2}" @click="status.repeat=++status.repeat%3"><span class="icon"><i class="fas fa-sync-alt"></i></span></div>
+        </div>
+        <div class="range-input audio-volume">
+          <input type="range" step="0.01" min="0" max="1" v-model="audio.vol" @mousemove="tuneVol" @change="tuneVol"/>
+        </div>
+      </div>
+    </div>
+      </div>
+</section>
+
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/musicmetadata/2.0.2/musicmetadata.min.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.0/jsmediatags.min.js'>
+  </script><script>
+var $ = new jQ(), mm = musicmetadata;
+var jsmediatags = window.jsmediatags;
+var ts = ["title", "artist", "album", "year", "comment", "track", "genre", "picture", "lyrics"];
+var audioDom = new Audio();
+var exID3 = [
+	{
+		title: '',
+		duration: 0,
+		picture: [],
+	},
+	{
+		artist : 'Emrullah Sürmeli',
+		album : '',
+		title : 'Baba (Bedel)',
+		picture : {},
+		src: 'https://www.youtube.com/watch?v=24i6lYilir4',
+		duration : 147.173878 // in seconds
+	},
+];
+var app = new Vue({
+	el: '#app',
+	data: {
+		cover: 'http://endlessicons.com/wp-content/uploads/2012/11/music-note-icon-614x460.png',
+		playList: [],
+		playHist: [],
+		status: {
+			shuffle: false,
+			repeat: 0,
+			showLyrics: false,
+		},
+		sortby: 'none',
+		sortAsc: true,
+		currId: -1,
+		audio: {
+			paused: true,
+			currTime: 0,
+			vol: 1,
+			meta: {
+				title: '',
+				duration: 0,
+				picture: [],
+			},
+		},
+		seeking: false,
+	},
+	computed: {
+		time: function () {
+			return {
+				ellapsed: this.formatTime(parseFloat(this.audio.currTime)),
+				remained: this.formatTime(this.audio.currTime - this.audio.meta.duration),
+			}
+		},
+		title: function () {
+			if (this.audio.meta.title == "")
+				return "No music is playing";
+			var t = [this.audio.meta.title];
+			t.unshift(this.audio.meta.artist);
+			return t.join(' – ');
+		}
+	},
+	mounted: function() {
+		for (var i=1; i<exID3.length; i++) {
+			this.playList.push(exID3[i]);
+		}
+		this.picked(0, false);
+	},
+	methods: {
+		playPause: function() {
+			if (this.audio.paused) {
+				audioDom.play();
+				if (this.playHist.indexOf(this.currId) == -1) {
+					this.playHist.push(this.currId);
+				}
+			} else {
+				audioDom.pause();
+			}
+			if (this.playHist.length == this.playList.length) {
+				this.resetHist(true);	
+			}
+			this.audio.paused = !this.audio.paused;
+		},
+		seekingStart: function() {
+			this.seeking = true;
+		},
+		seekingEnd: function() {
+			audioDom.currentTime = app.audio.currTime;
+			this.seeking = false;
+		},
+		tuneVol: function() {
+			this.audio.vol = Math.min(Math.max(parseFloat(this.audio.vol), 0), 1);
+			audioDom.volume = parseFloat(this.audio.vol);	
+		},
+		picked: function(id, autoplay) {
+			var that = this;
+			autoplay = autoplay && true;
+			that.currId = id;
+			that.audio.currTime = 0;
+			that.audio.meta = that.playList[id];
+			audioDom.src = that.audio.meta.src;
+			audioDom.addEventListener('loadeddata', function() {
+				that.audio.meta.duration = audioDom.duration;
+				if (autoplay == true) {
+					that.audio.paused = false;
+					audioDom.play();
+				}
+			});
+		},
+		forward: function() {
+			if (this.currId < this.playList.length - 1) {
+				this.picked(this.currId+1, !this.audio.paused);
+			}
+		},
+		backward: function() {
+			if (this.audio.currTime < 1 && this.currId > 0) {
+				this.picked(this.currId-1, !this.audio.paused);
+			} else {
+				this.audio.currTime = 0;
+				audioDom.currentTime = 0;
+			}
+		},
+		ended: function() {
+			var total = this.playList.length;
+			var nextId = -1;
+			this.audio.paused = true;
+			switch(this.status.repeat) {
+				case 0: // do nothing
+					if (this.status.shuffle) {
+						if (this.playHist.length < total) {
+							nextId = this.shuffleNext(true);
+						} else {
+							this.resetHist(false);
+						}
+					} else if (this.currId < total - 1) {
+						nextId = (this.currId + 1) % total;
+					}
+					break;
+				case 1: // repeat
+					if (this.status.shuffle) {
+						nextId = this.shuffleNext(false);
+					} else {
+						nextId = (this.currId + 1) % total;
+					}
+					break;
+				case 2: // self repeat
+					nextId = this.currId;
+					break;
+			}
+			if (nextId != -1)
+				this.picked(nextId, true);
+		},
+		shuffleNext: function(checkrepeat) {
+			checkrepeat = checkrepeat || false;
+			var nextId = 0;
+			do {
+				nextId = Math.floor(Math.random()*this.playList.length);
+			} while(checkrepeat && this.playHist.indexOf(nextId)!=-1)
+			return nextId;
+		},
+		sortBy: function() {
+			var tag = this.sortby;
+			var sign = this.sortAsc ? 1 : -1;
+			this.playList.sort((a,b) => {
+				switch(typeof a[tag]) {
+					case 'number': return sign * (a[tag] - b[tag]);
+					case 'string': return sign * (a[tag].localeCompare(b[tag]));
+				}
+			});
+		},
+		urlImage: function(src) {
+			return "url("+src+")";
+		},
+		clearList: function() {
+			this.audio.paused = true;
+			this.audio.currTime = 0;
+			this.audio.meta = exID3[0];
+			this.currId = -1;
+			this.playList.length = 0;
+			this.resetHist(false);
+		},
+		resetHist: function(addNow) {
+			addNow = addNow || false;
+			this.playHist.length = 0;
+			if (addNow) 
+				this.playHist.push(this.currId);
+		},
+		uploadedFiles: function(e) {
+			var pl = this.playList;
+			var files = e.srcElement.files;
+			// console.log(files);
+			for (var i=0; i<files.length; i++) {
+				(function(file){
+					var meta = {};
+					jsmediatags.read(file, {
+						onSuccess: function(tag) {
+							ts.forEach(k => { meta[k] = tag.tags[k];});
+							var src = URL.createObjectURL(file);
+							var audio = new Audio(src);
+							var pic = meta.picture;
+							meta.title = meta.title || file.name;
+							if (pic != undefined) {
+								var base64String = pic.data.map(c => String.fromCharCode(c)).join('');
+								pic.src = "data:" + pic.format + ";base64," + window.btoa(base64String);
+							}
+							if (meta.lyrics != undefined) {
+								meta.lyrics = meta.lyrics.replace(/[\r\n]/g, '<br>');
+							}
+							audio.addEventListener('loadeddata', function() {
+								meta.src = src;
+								meta.duration = audio.duration; 
+								pl.push(meta);
+							});
+						},
+						onError: function(error) {
+							alert(':( ' + error.type + ' ' + error.info);
+						}
+					});
+				})(files[i]);
+			}
+		},
+		formatTime: function(totalSeconds) {
+			var min = Math.floor(Math.abs(totalSeconds)/60);
+			var sec = Math.floor(Math.abs(totalSeconds)%60).toString().padStart(2, '0');
+			(Math.sign(totalSeconds) == -1) && (min = '-'+min);
+			return min + ':' + sec;
+		}
+	},
+});
+
+audioDom.addEventListener('ended', app.ended);
+document.addEventListener('keydown', function(e){
+	switch(e.keyCode) {
+		case 32: // space
+			activeBtn('.btn-play');
+			if (app.playList.length == 0)
+				return;
+			if (app.currId == -1) {
+				app.picked(0, true);
+			} else {
+				app.playPause();	
+			}
+			break;
+		case 37: // left
+			activeBtn('.btn-backward');
+			app.backward();
+			break;
+		case 39: //rifht
+			activeBtn('.btn-forward');
+			app.forward();
+			break;
+		case 38: // up
+			app.audio.vol += 0.1;
+			app.tuneVol();
+			break;
+		case 40: // down 
+			app.audio.vol -= 0.1;
+			app.tuneVol();
+			break;
+	}
+});
+
+function activeBtn(cssSelector) {
+	var btn = document.querySelector(cssSelector);
+	btn.classList.add('is-active');
+	setTimeout(function() {
+		btn.classList.remove('is-active');
+	}, 200);
+}
+
+setInterval(function(){
+	if (!app.audio.paused) {
+		!app.seeking && (app.audio.currTime = audioDom.currentTime);
+	}
+}, 200);
+
+//
+// Customize jQuery
+//
+function jQ() {
+	return {
+		findAll: function (selector) {
+			return document.querySelectorAll(selector);
+		},
+		find: function (selector) {
+			return document.querySelector(selector);
+		},
+		style: function (elem, obj) {
+			for (var key in obj) {
+				elem.style[key] = obj[key];
+			}
+		},
+		addClass: function (elem, obj) {
+			var classes = [];
+			switch (typeof obj) {
+			case 'string':
+				classes = obj.split(' ');
+			case 'object':
+				if (Array.isArray(obj))
+					classes = obj;
+			}	
+			classes.forEach(function (el) {elem.classList.add(el)});
+		},
+		removeClass: function (elem, obj) {
+			var classes = [];
+			switch (typeof obj) {
+			case 'string':
+				classes = obj.split(' ');
+			case 'object':
+				if (Array.isArray(obj))
+					classes = obj;	
+			}	
+			classes.forEach(function (el) {elem.classList.remove(el)});
+		}
+	}
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<head>
+	<title>Rastgele Tweet</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<style>
+	body {
+		background-color:#0d0d0d;
+		color:#aebcb9;
+	}
+</style>
+</head>
+<body>
+
+<div class="container">
+	<div class="jumbotron" style="background-color:#aebcb9;">
+		<h1 style="color:#0d0d0d;">Rastgele Tweet Oluşturun</h1>
+		<p style="color:#0d0d0d;">The Donald says...</p> 
+		<p>
+		  <button class="btn btn-primary btn-large" onClick="makeQuote()" style="background-color:#1da1f2">Tweet!</button>			
+		  <strong><h1><p id="word-area" class="text-success"></p></h1><strong>
+		<p>
+	</div>
+	<div class="jumbotron" style="background-color:#aebcb9;">
+		<h3 id="answer" style="font-size:20px; color:#0d0d0d;"> Ask Donald to Tweet </h3>
+	</div>
+</div>
+<script>
+
+var answer = document.getElementById("answer");
+
+var intro = ["", "Ve bu arada... ", "", "İnan bana: ", "", "Dediğim gibi... "];
+
+var a0 = ["Ben", "Ben", "Olacağım", "Olacağım", "Şu andan itibaren varım", "Olacağım",];
+
+var a1 = [
+["gerçekten", "öyleyse", "muazzam", "inanılmaz", "çok", "inanılmaz"],
+["zengin.", "harika.", "sağlıklı.", "yakışıklı.", "kadınlar için iyi.", "militarist."]
+];
+
+var a2 = [
+["en iyi", "en mütevazı", "en zeki", "en fantastik", "en başarılı", "en büyük"],
+["başkan", "kişi", "müzakereci", "akıl", "lider", "işadamı"],
+["Amerika Birleşik Devletleri tarihinde.", "hiç."]
+];
+
+var b = [
+["Yapardım", "Yapacağım", "Yapacağız", "Yapacağım", "Yapacağız", "Yapacağız"],
+["IŞİD'i yok et", "Amerika'yı koru", "istihdam yarat", "duvar inşa et", "kazan", "dövüş", "gazilerimize hizmet et", "sınırlarımızı geri getir"],
+["çok zor", "çok fazla", "çok kolay" , "güç ve dayanıklılıkla --", "çok fazla enerjiyle", "harika bir şekilde" ],
+["başınız dönecek.", "Büyük bir açıklama yapacak. ", "Rakipsiz olacak.", "Home run olacak!", "İkonik olacak.", " yüzde yüz doğru."]
+];
+
+var conclusion = [
+"Sana göstereceğim!",
+"Ve evet, benim saçım.",
+"Bu yüksek öncelikli.",
+"Bununla gurur duyuyorum.",
+"",
+"#MAGA",
+'#Amerikaİlk',
+"", "", "", ""
+];
+
+function makeQuote(){
+	var quote = buildQuote();
+	answer.innerHTML = quote;
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomPart(options){
+	var choice = getRandomInt(0, options.length - 1);
+	return options[choice];
+}
+
+function buildQuote(){
+	var qt = "", route, coin, i, textArr;
+	
+	qt = qt + getRandomPart(intro);
+
+	route = getRandomInt(0,1);
+	
+	if(route === 0){
+
+		qt = qt + getRandomPart(a0)
+
+
+		coin = getRandomInt(0,1);
+		textArr = (coin === 0? a1 : a2);
+		for(i=0; i<textArr.length; i++){
+			qt = qt + getRandomPart(textArr[i]);
+		}
+	}
+	else{
+
+		for (i=0; i<b.length; i++){
+			qt = qt + getRandomPart(b[i]);
+		}
+	}
+	
+	qt = qt + getRandomPart(conclusion);
+
+	return qt;
+}
+</script>
+
+</body>
+</html>
